@@ -4,9 +4,8 @@ import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.util.Scanner;
 import java.util.logging.Logger;
-public class tictactoa extends XoBoard
+public class Tictactoa
 {
-    static public int size;
     public static void main( String[] args )
     {
         Logger l = Logger.getLogger("hi");
@@ -31,7 +30,10 @@ public class tictactoa extends XoBoard
                 	i--;
                 }
                 xb.printArray();
-                xb.check();
+                xb.checkRight();
+		xb.checkLeft();
+		xb.checkDiagnolRight();
+		xb.checkDiagnolLeft();
             }
             else
             {
@@ -43,7 +45,10 @@ public class tictactoa extends XoBoard
                 	i--;
                 }
                 xb.printArray();
-                xb.check();
+                xb.checkRight();
+		xb.checkLeft();
+		xb.checkDiagnolRight();
+		xb.checkDiagnolLeft();
             }
             i++;
             if(i>=9)
@@ -59,9 +64,11 @@ public class tictactoa extends XoBoard
 }
 class XoBoard
 {
+    String str1 = "Player 1 Winner";
+    String str2 = "Player 2 Winner";
     static PrintStream ps = new PrintStream(new FileOutputStream(FileDescriptor.out));
     Scanner is = new Scanner(System.in);
-    char ch[][];
+    char[][] ch;
     int size;
     XoBoard()
     {
@@ -92,7 +99,7 @@ class XoBoard
     }
     public int insert(int index,char x)
     {
-        System.out.println(index);
+        ps.println(index);
         int row = (index-1)/size;
         int col = (index-1)%size;
         if(ch[row][col] == ' ')
@@ -104,7 +111,7 @@ class XoBoard
         }
         return 0;
     }
-    void check()
+    void checkRight()
     {
     	for(int i=0;i<ch.length;i++) //checkrow
     	{
@@ -116,23 +123,26 @@ class XoBoard
     			{
     				flag++;
     			}
-    			else if(ch[i][j]== 'x')
+    			else if(ch[i][j]== 'o')
     			{
     				flag1++;
     			}
     		}
     		if(flag == size)
     		{
-    			ps.print("player 1 winner");
+    			ps.print(str1);
     			System.exit(0);
     		}
     		if(flag1 == size)
     		{
-    			ps.print("player 2 winner");
+    			ps.print(str2);
     			System.exit(0);
     		}
     	}
+    }
     	
+    void checkLeft()
+    {
     	for(int j=0;j<ch.length;j++) //checkcolumn
     	{
     		int flag = 0;
@@ -150,19 +160,21 @@ class XoBoard
     		}
     		if(flag == size)
     		{
-    			ps.print("player 1 winner");
+    			ps.print(str1);
     			System.exit(0);
     		}
     		if(flag1 == size)
     		{
-    			ps.print("player 2 winner");
+    			ps.print(str2);
     			System.exit(0);
     		}
     	}
-    	
+    }    
+    void checkDiagnolRight()
+    {
     	int play1=0;
     	int play2=0;
-		for(int j=0;j<ch.length;j++) //check right diagnole
+	for(int j=0;j<ch.length;j++) //check right diagnole
     	{
     		for(int i=0;i<ch.length;i++)
     		{
@@ -181,15 +193,17 @@ class XoBoard
     	}
 		if(play1 == size)
 		{
-			ps.print("player 1 winner");
+			ps.print(str1);
 			System.exit(0);
 		}
 		if(play2 == size)
 		{
-			ps.print("player 2 winner");
+			ps.print(str2);
 			System.exit(0);
 		}
-    	
+    }
+    void checkDiagnolLeft()
+    {
     	int p1=0;
     	int p2=0;
     	for(int i=0;i<ch.length;i++) //check left diagnole
@@ -205,13 +219,13 @@ class XoBoard
     	}
     	if(p1 == size)
 		{
-			ps.print("player 1 winner");
+			ps.print(str1);
 			System.exit(0);
 		}
 		if(p2 == size)
 		{
-			ps.print("player 2 winner");
+			ps.print(str2);
 			System.exit(0);
 		}
-    }
+       }
 }
