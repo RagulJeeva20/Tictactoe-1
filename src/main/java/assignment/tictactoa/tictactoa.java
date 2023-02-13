@@ -1,231 +1,150 @@
-package assignment.tictactoa;
+package org.example;
+
+
+
 import java.io.FileDescriptor;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
+import java.util.HashSet;
 import java.util.Scanner;
-import java.util.logging.Logger;
-public class Tictactoa
-{
-    public static void main( String[] args )
-    {
-        Logger l = Logger.getLogger("hi");
-        Scanner sc = new Scanner(System.in);
-        PrintStream ps = new PrintStream(new FileOutputStream(FileDescriptor.out));
-        XoBoard xb = new XoBoard();
-        int position;
-        int s=xb.size;
-        int i=0;
-        xb.printArray();
-        l.info("Player 1  x");
-        l.info("Player 2  o");
-        while(i<s*s)
-        {
-            if(i%2==0)
-            {
-                l.info("Enter the position");
-                position = sc.nextInt();
-                int x = xb.insert(position,'x');
-                if(x==1)
-                {
-                	i--;
-                }
-                xb.printArray();
-                xb.checkRight();
-		xb.checkLeft();
-		xb.checkDiagnolRight();
-		xb.checkDiagnolLeft();
-            }
-            else
-            {
-                l.info("Enter the position");
-                position = sc.nextInt();
-                int x = xb.insert(position,'o');
-                if(x==1)
-                {
-                	i--;
-                }
-                xb.printArray();
-                xb.checkRight();
-		xb.checkLeft();
-		xb.checkDiagnolRight();
-		xb.checkDiagnolLeft();
-            }
-            i++;
-            if(i>=9)
-            {
-            	ps.print("Draw");
-            }
-        }
-        
-        
-        
-    }
-    
-}
-class XoBoard
-{
-    String str1 = "Player 1 Winner";
-    String str2 = "Player 2 Winner";
-    static PrintStream ps = new PrintStream(new FileOutputStream(FileDescriptor.out));
-    Scanner is = new Scanner(System.in);
-    char[][] ch;
-    int size;
-    XoBoard()
-    {
-        ps.print("Enter the size");
-        this.size = is.nextInt();
-        ch=new char[size][size];
-        for(int i=0;i<size;i++)
-        {
-            for(int j=0;j<size;j++)
-                {
-                    ch[i][j] = ' ';
-                }
-        }
-    }
-    void printArray()
+
+public class Tictac {
+    public static void main(String[] args)
     {
 
-    for(int i=0;i<size;i++)
-    {
-    	ps.print("|");
-        for(int j=0;j<size;j++)
-            {
-                ps.print(ch[i][j]);
-                ps.print("|");
+
+        String[][] arr=new String[3][3];
+
+        game(arr);
+
+    }
+    static void game(String[][] arr) {
+
+        PrintStream ps = new PrintStream(new FileOutputStream(FileDescriptor.out));
+
+        int ind = 1;
+        for (int i = 0; i < arr.length; i++) {
+            ps.print("|");
+            for (int j = 0; j < arr[i].length; j++) {
+                arr[i][j] = String.valueOf(ind);
+                ps.print(arr[i][j] + " |");
+                ind++;
             }
-        ps.println();
+            ps.println("\n+--+--+--+");
+
+
+        }
+        versus(arr);
     }
-    }
-    public int insert(int index,char x)
-    {
-        ps.println(index);
-        int row = (index-1)/size;
-        int col = (index-1)%size;
-        if(ch[row][col] == ' ')
+        static void versus(String[][] arr)
         {
-        	ch[row][col]=x;
+            Scanner s=new Scanner(System.in);
+            PrintStream ps = new PrintStream(new FileOutputStream(FileDescriptor.out));
+
+        ps.println("player 1:x");
+        ps.println("player 2:O");
+
+        int pl=1;
+
+
+        HashSet<Integer> hs=new HashSet<>();
+
+        while(true)
+        {
+
+            if(pl%2==0) {
+                ps.println("player 2 can play..choose any number from 1 to 9!");
+                int num = s.nextInt();
+                if (hs.contains(num)) {
+                    ps.println("This position has already taken enter different position!");
+                } else {
+                    ins(arr, num, pl);
+                     winner(arr);
+                    hs.add(num);
+                    pl++;
+                }
+            }
+            if (pl%2!=0)
+            {
+                ps.println("player 1 can play..choose any number from 1 to 9!");
+                int num = s.nextInt();
+                if (hs.contains(num))
+                {
+                    ps.println("This position is already taken,so enter different position!");
+                }
+                else
+                {
+                    ins(arr, num, pl);
+                    winner(arr);
+                    hs.add(num);
+                    pl++;
+                }
+            }
+            if (pl>9)
+            {
+                ps.println("The game has been drawn!");
+                break;
+            }
         }
-        else {
-        	return 1;
+
+    }
+    static void winner(String[][] arr)
+    {
+        PrintStream ps=new PrintStream(new FileOutputStream(FileDescriptor.out));
+        for (int i = 0; i <3 ; i++)
+        {
+        if ((arr[i][0].equals(arr[i][1])) && (arr[i][1].equals(arr[i][2])))
+        {
+            ps.println("player playing with " + arr[i][0] + " is winner!");
+            System.exit(0);
         }
-        return 0;
+         if ((arr[0][i].equals(arr[1][i])) && (arr[1][i].equals(arr[2][i])))
+            {
+                ps.println("player playing with " +arr[1][i] + " is winner!");
+                System.exit(0);
+            }
+        if (((arr[0][0].equals(arr[1][1])) &&(arr[1][1].equals(arr[2][2]))) ||((arr[0][2].equals(arr[1][1])) &&(arr[1][1].equals(arr[2][0]))))
+            {
+                 ps.println("player playing with " +arr[1][1] + " is winner!");
+                 System.exit(0);
+             }
+        }
     }
-    void checkRight()
+    static void ins(String[][] arr,int n,int pl)
     {
-    	for(int i=0;i<ch.length;i++) //checkrow
-    	{
-    		int flag = 0;
-        	int flag1 = 0;
-    		for(int j=0;j<ch.length;j++)
-    		{
-    			if(ch[i][j]== 'x')
-    			{
-    				flag++;
-    			}
-    			else if(ch[i][j]== 'o')
-    			{
-    				flag1++;
-    			}
-    		}
-    		if(flag == size)
-    		{
-    			ps.print(str1);
-    			System.exit(0);
-    		}
-    		if(flag1 == size)
-    		{
-    			ps.print(str2);
-    			System.exit(0);
-    		}
-    	}
+
+        int col = (n - 1) % 3;
+        int row = (n - 1) / 3;
+        if (pl%2==0) {
+            for (int i = 0; i < arr.length; i++) {
+                for (int j = 0; j < arr[i].length; j++) {
+                    arr[row][col] = "O";
+                }
+            }
+            show(arr);
+        }
+        if (pl%2!=0) {
+            for (int i = 0; i < arr.length; i++) {
+                for (int j = 0; j < arr[i].length; j++) {
+                    arr[row][col] = "x";
+                }
+            }
+            show(arr);
+        }
     }
-    	
-    void checkLeft()
-    {
-    	for(int j=0;j<ch.length;j++) //checkcolumn
-    	{
-    		int flag = 0;
-        	int flag1 = 0;
-    		for(int i=0;i<ch.length;i++)
-    		{
-    			if(ch[i][j]== 'x')
-    			{
-    				flag++;
-    			}
-    			else if(ch[i][j]== 'o')
-    			{
-    				flag1++;
-    			}
-    		}
-    		if(flag == size)
-    		{
-    			ps.print(str1);
-    			System.exit(0);
-    		}
-    		if(flag1 == size)
-    		{
-    			ps.print(str2);
-    			System.exit(0);
-    		}
-    	}
-    }    
-    void checkDiagnolRight()
-    {
-    	int play1=0;
-    	int play2=0;
-	for(int j=0;j<ch.length;j++) //check right diagnole
-    	{
-    		for(int i=0;i<ch.length;i++)
-    		{
-    			if((i+j)== size-1)
-    			{
-	    			if(ch[i][j]== 'x')
-	    			{
-	    				play1++;
-	    			}
-	    			else if(ch[i][j]== 'o')
-	    			{
-	    				play2++;
-	    			}
-    			}
-    		}
-    	}
-		if(play1 == size)
-		{
-			ps.print(str1);
-			System.exit(0);
-		}
-		if(play2 == size)
-		{
-			ps.print(str2);
-			System.exit(0);
-		}
+    static void show(String[][] arr)
+        {
+            PrintStream ps=new PrintStream(new FileOutputStream(FileDescriptor.out));
+
+            for (int i = 0; i < arr.length ; i++)
+            {
+                ps.print("|");
+                for (int j = 0; j <arr[i].length; j++)
+                {
+                    ps.print( arr[i][j]+ " |");
+                }
+                ps.println("\n+--+--+--+");
+            }
+        }
     }
-    void checkDiagnolLeft()
-    {
-    	int p1=0;
-    	int p2=0;
-    	for(int i=0;i<ch.length;i++) //check left diagnole
-    	{
-    		if(ch[i][i]=='x')
-    		{
-    			p1++;
-    		}
-    		else if(ch[i][i]=='o')
-    		{
-    			p2++;
-    		}
-    	}
-    	if(p1 == size)
-		{
-			ps.print(str1);
-			System.exit(0);
-		}
-		if(p2 == size)
-		{
-			ps.print(str2);
-			System.exit(0);
-		}
-       }
-}
+
